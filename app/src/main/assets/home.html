@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<title>Top Up Game</title>
+<script src="sites.js"></script>
+<style>
+  :root{
+    --bg:#06060f; --c1:#7c3aed; --c2:#06b6d4; --c3:#f43f5e; --lime:#a3e635;
+    --txt:#f5f5ff; --muted:#8b8ba7; --gold:#fbbf24;
+    --card:rgba(255,255,255,.05); --line:rgba(255,255,255,.10);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg); color:var(--txt);
+    overflow-x:hidden; position:relative; min-height:100vh;
+    padding:max(26px,env(safe-area-inset-top)) 18px 40px;
+  }
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:linear-gradient(rgba(124,58,237,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(6,182,212,.06) 1px,transparent 1px);
+    background-size:34px 34px;mask-image:radial-gradient(circle at 50% 30%,#000,transparent 80%)}
+  .blob{position:fixed;border-radius:50%;filter:blur(72px);opacity:.5;z-index:0;pointer-events:none}
+  .b1{width:300px;height:300px;background:var(--c1);top:-100px;left:-70px;animation:f1 14s ease-in-out infinite}
+  .b2{width:280px;height:280px;background:var(--c2);bottom:30px;right:-90px;animation:f2 16s ease-in-out infinite}
+  .b3{width:220px;height:220px;background:var(--c3);top:36%;left:55%;animation:f3 12s ease-in-out infinite}
+  @keyframes f1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,30px)}}
+  @keyframes f2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-40px)}}
+  @keyframes f3{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-40%,30px)}}
+
+  .wrap{position:relative;z-index:1;max-width:520px;margin:0 auto}
+  .logo{text-align:center;margin:14px 0 18px}
+  .logo .badge{display:inline-flex;align-items:center;gap:9px;padding:9px 18px;border-radius:14px;
+    background:var(--card);border:1px solid var(--line);backdrop-filter:blur(10px);
+    box-shadow:0 0 30px rgba(124,58,237,.25)}
+  .logo .badge img{height:46px;width:auto;display:block;border-radius:10px}
+  .logo .gp{font-size:18px;filter:drop-shadow(0 0 8px var(--c2))}
+  .logo h1{font-size:16px;font-weight:800;letter-spacing:1.5px;
+    background:linear-gradient(90deg,var(--c2),var(--lime));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .tagline{text-align:center;color:var(--muted);font-size:13px;margin:12px 0 26px}
+  .tagline b{color:var(--txt)}
+
+  /* daftar tombol */
+  .btns{display:flex;flex-direction:column;gap:16px}
+  /* tombol: bingkai dengan cahaya emas berjalan + wajah dark elegan */
+  .btn{position:relative;width:100%;border-radius:34px;padding:2.5px;cursor:pointer;overflow:hidden;
+    background:#1c1a14;box-shadow:0 9px 24px rgba(0,0,0,.5);
+    transition:transform .12s ease}
+  .btn::before{content:"";position:absolute;z-index:0;top:50%;left:50%;width:700px;height:700px;
+    transform:translate(-50%,-50%);
+    background:conic-gradient(from 0deg,
+      rgba(255,200,60,0) 0deg, rgba(255,200,60,0) 215deg,
+      #f5c542 290deg, #fff4c2 330deg, #f5c542 360deg);
+    animation:spin 3.2s linear infinite}
+  .btn:active{transform:scale(.975)}
+  .face{position:relative;z-index:1;display:flex;align-items:center;gap:14px;width:100%;height:64px;
+    padding:0 20px;border-radius:32px;color:#fff;font-weight:800;font-size:17px;letter-spacing:.3px;overflow:hidden}
+  .face::after{content:"";position:absolute;left:0;right:0;top:0;height:46%;pointer-events:none;
+    background:linear-gradient(rgba(255,255,255,.12),rgba(255,255,255,0));border-radius:32px 32px 50% 50%/32px 32px 24px 24px}
+  @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+  .btn .ic{position:relative;z-index:1;width:42px;height:42px;flex:none;border-radius:50%;
+    background:rgba(255,255,255,.12);border:2px solid rgba(245,197,66,.55);
+    background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;
+    font-size:18px;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+  .btn .nm{position:relative;z-index:1;flex:1;text-align:center;line-height:1.15;
+    text-shadow:0 1px 4px rgba(0,0,0,.6)}
+  .btn .arr{position:relative;z-index:1;flex:none;font-size:22px;color:#f5c542;opacity:.95;
+    text-shadow:0 1px 3px rgba(0,0,0,.5)}
+
+
+  .empty{text-align:center;color:var(--muted);padding:50px 20px}
+  .empty .ic{font-size:42px;margin-bottom:12px}
+  .empty p{font-size:14px;line-height:1.5}
+
+  /* box event & pesan di bawah */
+  .ibox{display:none;margin-top:16px;padding:16px 18px;border-radius:16px;
+    background:var(--card);border:1px solid var(--line);backdrop-filter:blur(8px)}
+  .ibox.show{display:block}
+  .ibox .htitle{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:800;
+    letter-spacing:.5px;text-transform:uppercase;margin-bottom:9px}
+  .ibox .htitle .ic{font-size:18px}
+  .ibox .body{font-size:14px;line-height:1.55;color:var(--txt);white-space:pre-wrap}
+  .ibox.event{box-shadow:0 0 24px rgba(251,191,36,.15)}
+  .ibox.event .htitle{color:#fbbf24}
+  .ibox.msg{box-shadow:0 0 24px rgba(56,189,248,.15)}
+  .ibox.msg .htitle{color:#38bdf8}
+</style>
+</head>
+<body>
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  <div class="wrap">
+    <div class="logo">
+      <div class="badge" id="logoBadge"><span class="gp">🎮</span><h1 id="appName">TOP UP GAME</h1></div>
+      <div class="tagline">Pilih game-mu, lalu <b>KLIK</b> Untuk login dan maxwin hari ini ⚡</div>
+    </div>
+
+    <div class="btns" id="btns"></div>
+
+    <div class="ibox event" id="boxEvent"></div>
+    <div class="ibox msg" id="boxMessage"></div>
+  </div>
+
+<script>
+  var SITES = window.SITES || [];
+  var LOGO_URL = window.LOGO_URL || '';
+  var BG_URL   = window.BG_URL   || '';
+  var APP_NAME = window.APP_NAME || 'TOP UP GAME';
+  var INFO_URL = window.INFO_URL || '';
+
+  /* warna dasar tiap tombol (dark elegan, bergiliran) — 1:hitam-abu, 2:ungu-hitam, dst */
+  var COLORS = [
+    ['#3a3a42','#101014'],
+    ['#7a1f9e','#160620'],
+    ['#1e3a5f','#08111c'],
+    ['#5f1e2e','#1c0810'],
+    ['#1e5f4a','#08160f'],
+    ['#574310','#16100a']
+  ];
+
+  function esc(t){ return (t||'').replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];}); }
+
+  function applyTheme(){
+    if(BG_URL){
+      document.body.style.backgroundImage = "linear-gradient(rgba(6,6,15,.88),rgba(6,6,15,.88)), url('"+BG_URL+"')";
+      document.body.style.backgroundSize = "cover";
+      document.body.style.backgroundPosition = "center";
+      document.body.style.backgroundAttachment = "fixed";
+      document.body.style.backgroundRepeat = "no-repeat";
+      document.body.style.backgroundColor = "#06060f";
+    }
+    var badge=document.getElementById('logoBadge');
+    if(LOGO_URL){ badge.innerHTML = '<img src="'+LOGO_URL+'" alt="logo">'; }
+    else { badge.innerHTML = '<span class="gp">🎮</span><h1>'+esc(APP_NAME)+'</h1>'; }
+  }
+
+  function openSite(s){
+    if(window.AndroidApp && AndroidApp.open){ AndroidApp.open(s.url); }
+    else { location.href = s.url; }
+  }
+
+  function iconHTML(s){
+    if(s.image) return '<div class="ic" style="background-image:url(\''+s.image+'\')"></div>';
+    var ch=(s.name.trim()[0]||'?').toUpperCase();
+    return '<div class="ic">'+ch+'</div>';
+  }
+
+  function render(){
+    var box=document.getElementById('btns');
+    if(!SITES.length){
+      box.innerHTML='<div class="empty"><div class="ic">🕹️</div><p>Belum ada game.<br>Tambahkan di file <b>sites.js</b></p></div>';
+      return;
+    }
+    box.innerHTML = SITES.map(function(s,i){
+      var col = COLORS[i % COLORS.length];
+      var grad = 'background:linear-gradient(180deg,'+col[0]+','+col[1]+')';
+      return '<div class="btn" onclick="openSite(SITES['+i+'])">'+
+        '<div class="face" style="'+grad+'">'+
+          iconHTML(s)+
+          '<div class="nm">'+esc(s.name)+'</div>'+
+          '<div class="arr">›</div>'+
+        '</div></div>';
+    }).join('');
+  }
+
+  /* ambil isi box Event & Pesan live dari panel admin */
+  function loadInfo(){
+    if(!INFO_URL) return;
+    var url=INFO_URL + (INFO_URL.indexOf('?')>=0 ? '&' : '?') + 't=' + Date.now();
+    fetch(url, {cache:'no-store'})
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if(!data) return;
+        renderBox('boxEvent', '🎉', 'Event Terbaru', data.event);
+        renderBox('boxMessage', '📢', 'Pengumuman', data.message);
+      })
+      .catch(function(){ /* offline / gagal — diamkan saja */ });
+  }
+  function renderBox(id, icon, defTitle, d){
+    if(!d || d.show===false || !d.text) return;
+    var box=document.getElementById(id);
+    var title = d.title || defTitle;
+    box.innerHTML = '<div class="htitle"><span class="ic">'+icon+'</span>'+esc(title)+'</div>'+
+                    '<div class="body">'+esc(d.text)+'</div>';
+    box.classList.add('show');
+  }
+
+  applyTheme();
+  render();
+  loadInfo();
+</script>
+</body>
+</html>
