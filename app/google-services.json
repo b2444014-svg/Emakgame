@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "1076613776345",
-    "project_id": "playgame-notif",
-    "storage_bucket": "playgame-notif.firebasestorage.app"
+    "project_number": "877890856734",
+    "project_id": "emakbet-app",
+    "storage_bucket": "emakbet-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1076613776345:android:f15d92f80b05860a89cfc8",
+        "mobilesdk_app_id": "1:877890856734:android:ca1dcc941bd56e4fbfcb0f",
         "android_client_info": {
-          "package_name": "com.simple.webapp"
+          "package_name": "com.emakgame.app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBFxhWdZ1ULqJbbKvA5rmo7xHaUSjTMvd4"
+          "current_key": "AIzaSyBUG1eY6mEeayq-gGmmH7WyD2y_-rEcW-g"
         }
       ],
       "services": {
